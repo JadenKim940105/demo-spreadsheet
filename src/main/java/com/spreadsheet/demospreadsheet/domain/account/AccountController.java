@@ -1,5 +1,6 @@
 package com.spreadsheet.demospreadsheet.domain.account;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +21,19 @@ public class AccountController {
 
     private final AccountRepository accountRepository;
 
-    AccountController(AccountRepository accountRepository){
+    private final ModelMapper modelMapper;
+
+    AccountController(AccountRepository accountRepository, ModelMapper modelMapper){
         this.accountRepository = accountRepository;
+        this.modelMapper = modelMapper;
     }
 
   @PostMapping
-    public ResponseEntity createAccount(@RequestBody Account account){
+    public ResponseEntity createAccount(@RequestBody AccountDto accountDto){
+      Account account = modelMapper.map(accountDto, Account.class);
       Account newAccount = this.accountRepository.save(account);
       URI createdUri = linkTo(AccountController.class).slash(newAccount.getId()).toUri();
-      return ResponseEntity.created(createdUri).body(account);
+      return ResponseEntity.created(createdUri).body(newAccount);
   }
 
 }

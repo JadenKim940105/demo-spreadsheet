@@ -19,5 +19,5 @@ public class Account {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
-    private Set<AccountRole> roles;
+    private Set<AccountRole> roles = Set.of(AccountRole.USER);
 }
